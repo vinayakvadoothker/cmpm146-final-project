@@ -1,5 +1,5 @@
 import React from 'react';
-import AdventureCarousel from './AdventureCarousel';
+import AdventureCarousel from '../components/AdventureCarousel';
 import { FaAngleDoubleDown } from "react-icons/fa";
 
 const Home: React.FC = () => {
