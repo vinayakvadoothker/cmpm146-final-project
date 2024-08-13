@@ -1,0 +1,233 @@
+/* global.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 215, 27%, 92%;     /*215, 27%, 88% */
+    --foreground: 217 5% 10%;
+    --card: 215, 27%, 92%;
+    --card-foreground: 217 5% 15%;
+    --popover: 215, 27%, 92%;
+    --popover-foreground: 217 100% 10%;
+    --primary: 217 100% 77%;
+    --primary-foreground: 0 0% 0%;
+    --secondary: 217 30% 90%;
+    --secondary-foreground: 0 0% 0%;
+    --muted: 215, 27%, 92%;
+    --muted-foreground: 217 5% 40%;
+    --accent: 179 30% 90%;
+    --accent-foreground: 217 5% 15%;
+    --destructive: 0 100% 50%;
+    --destructive-foreground: 215, 5%, 92%;
+    --border: 217 30% 82%;
+    --input: 217 30% 50%;
+    --ring: 217 100% 77%;
+    --radius: 1rem;
+  }
+
+  .dark {
+    --background: 217 50% 26%;
+    --foreground: 217 5% 100%;
+    --card: 217 50% 26%;
+    --card-foreground: 217 5% 90%;
+    --popover: 217 50% 26%;
+    --popover-foreground: 217 5% 99%;
+    --primary: 217 100% 77%;
+    --primary-foreground: 0 0% 0%;
+    --secondary: 217 30% 26%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 217 50% 26%;
+    --muted-foreground: 217 5% 70%;
+    --accent: 179 30% 26%;
+    --accent-foreground: 217 5% 99%;
+    --destructive: 0 100% 30%;
+    --destructive-foreground: 217 5% 90%;
+    --border: 217 30% 26%;
+    --input: 217 30% 18%;
+    --ring: 217 100% 77%;
+    --radius: 1rem;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeOut {
+    from {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+  }
+
+  .fadeIn {
+    animation: fadeIn 0.3s forwards;
+  }
+
+  .fadeOut {
+    animation: fadeOut 0.3s forwards;
+  }
+  
+  h1 {
+    @apply scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl;
+    color: var(--foreground);
+  }
+
+  h2 {
+    @apply scroll-m-20 pb-2 text-3xl font-semibold tracking-tight mt-0 first:mt-0;
+    color: var(--foreground);
+  }
+
+  h3 {
+    @apply scroll-m-20 pb-2 text-2xl font-semibold tracking-tight mt-0 first:mt-0;
+    color: var(--foreground);
+  }
+
+  h4 {
+    @apply scroll-m-20 pb-2 text-xl font-semibold tracking-tight mt-0 first:mt-0;
+    color: var(--foreground);
+  }
+
+  h5 {
+    @apply scroll-m-20 pb-2 text-lg font-semibold tracking-tight mt-0 first:mt-0;
+    color: var(--foreground);
+  }
+
+  .dark h1,
+  .dark h2,
+  .dark h3,
+  .dark h4,
+  .dark h5 {
+    color: var(--foreground);
+  }
+
+  .chat-window {
+    @apply bg-background;
+    color: var(--background);
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+
+  .select-trigger {
+    @apply w-56;
+    background-color: var(--card);
+    color: var(--card-foreground);
+  }
+
+  .dark .select-trigger {
+    background-color: var(--card);
+    color: var(--card-foreground);
+  }
+
+  .select-content {
+    background-color: var(--card);
+    color: var(--card-foreground);
+  }
+
+  .dark .select-content {
+    background-color: var(--card);
+    color: var(--card-foreground);
+  }
+
+  .select-item:hover {
+    background-color: var(--muted);
+    color: var(--muted-foreground);
+  }
+
+  .dark .select-item:hover {
+    background-color: var(--muted);
+    color: var (--muted-foreground);
+  }
+
+  .chatbox-toggle {
+    @apply fixed bottom-4 right-4 z-10;
+    background-color: var(--primary);
+    color: var(--primary-foreground);
+  }
+
+  .dark .chatbox-toggle {
+    background-color: hsla(217, 33%, 17%, 0); /* Adjusted to match search button */
+    color: var(--secondary-foreground);
+  }
+
+  .chatbox-container {
+    @apply fixed bottom-16 right-4 w-72 h-96 p-4 shadow-lg rounded-lg transition-opacity duration-300;
+    background-color: white;
+    color: var(--card-foreground);
+  }
+
+  .dark .chatbox-container {
+    background-color: white; 
+    color: black;
+  }
+
+  .chatbox-container:not(.open) {
+    @apply opacity-0 pointer-events-none;
+  }
+
+  .chatbox-container.open {
+    @apply opacity-100;
+  }
+  
+  .dialog-content {
+    max-width: 500px;
+    width: 100%;
+    padding: 1.5rem;
+  }
+
+  .drawer-trigger button {
+    width: 100%;
+    text-align: left;
+    padding: 0.5rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.375rem;
+    transition: background-color 0.2s;
+  }
+
+  .drawer-trigger button:hover {
+    background-color: var(--muted);
+    color: var(--muted-foreground);
+  }
+
+  .drawer-header,
+  .drawer-footer {
+    padding: 1rem 1.5rem;
+  }
+
+  .drawer-header h2 {
+    margin: 0;
+  }
+
+  .drawer-footer button {
+    margin-left: auto;
+  }
+
+  .bg-gradient-to-r {
+    background: linear-gradient(to right, #4299e1, #3182ce);
+  }
+
+  .subtitle {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    line-height: 1.5;
+  }
+}
