@@ -7,8 +7,8 @@ This project is a Dungeons & Dragons (D&D) inspired text adventure game where th
 1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/your-username/dd-inspired-text-adventure.git
-   cd dd-inspired-text-adventure
+   git clone https://github.com/vinayakvadoothker/cmpm146-final-project
+   cd cmpm146-final-project
 Install dependencies:
 
 ```npm install```
