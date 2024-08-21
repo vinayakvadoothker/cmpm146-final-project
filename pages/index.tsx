@@ -1,6 +1,7 @@
+// index.tsx
+
 import React from 'react';
-import AdventureCarousel from '../components/AdventureCarousel';
-import { FaAngleDoubleDown } from "react-icons/fa";
+import { AdventureCarousel } from '../components/AdventureCarousel';
 
 const Home: React.FC = () => {
     const scrollToSection = () => {
@@ -21,11 +22,8 @@ const Home: React.FC = () => {
                 </div>
 
                 <div className="flex flex-col justify-center items-center w-full">
-                    <AdventureCarousel />
-                    <FaAngleDoubleDown
-                        className="cursor-pointer hover -mt-56"
-                        onClick={scrollToSection}
-                    />
+                    <AdventureCarousel narrative={''} choices={[]} />
+
                 </div>
 
                 <div id="overview-section" className="mt-40 text-center max-w-3xl space-y-6">
