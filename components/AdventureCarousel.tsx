@@ -1,7 +1,6 @@
 import * as React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import Image from 'next/image';
 
 interface Choice {
@@ -21,6 +20,56 @@ export function AdventureCarousel({ narrative, choices }: AdventureCarouselProps
   const [isButtonLoading, setIsButtonLoading] = useState<boolean>(false);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [step, setStep] = useState<number>(1);
+  const [isImageLoading, setIsImageLoading] = useState<boolean>(false); 
+
+  const fetchStory = useCallback(async () => {
+    setIsLoading(true);
+    const response = await fetch('/api/generateStory', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ userInput: '', isFirstVisit: true, step }),
+    });
+
+    const data = await response.json();
+    if (data.narrative) {
+      setCurrentNarrative(data.narrative);
+      localStorage.setItem('adventure-narrative', data.narrative);
+      fetchImage(data.narrative); 
+    }
+    if (data.choices) {
+      setCurrentChoices(data.choices);
+      localStorage.setItem('adventure-choices', JSON.stringify(data.choices));
+    }
+    if (data.step) {
+      setStep(data.step);
+      localStorage.setItem('adventure-step', data.step.toString());
+    }
+    setIsLoading(false);
+  }, [step]);
+
+  const fetchImage = async (narrativeText: string) => {
+    setIsImageLoading(true); 
+    try {
+      const response = await fetch('/api/generateImage', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ narrative: narrativeText }),
+      });
+      const data = await response.json();
+      if (data.imageUrl) {
+        setImageUrl(data.imageUrl);
+        localStorage.setItem('adventure-image-url', data.imageUrl);
+      }
+    } catch (error) {
+      console.error('Error fetching image:', error);
+    } finally {
+      setIsImageLoading(false); 
+    }
+  };
 
   useEffect(() => {
     const savedStep = localStorage.getItem('adventure-step');
@@ -37,56 +86,12 @@ export function AdventureCarousel({ narrative, choices }: AdventureCarouselProps
     } else {
       fetchStory();
     }
-  }, []);
-
-  const fetchStory = async () => {
-    setIsLoading(true);
-    const response = await fetch('/api/generateStory', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ userInput: '', isFirstVisit: true, step }),
-    });
-
-    const data = await response.json();
-    if (data.narrative) {
-      setCurrentNarrative(data.narrative);
-      localStorage.setItem('adventure-narrative', data.narrative);
-      await fetchImage(data.narrative); // Fetch the image based on the narrative
-    }
-    if (data.choices) {
-      setCurrentChoices(data.choices);
-      localStorage.setItem('adventure-choices', JSON.stringify(data.choices));
-    }
-    if (data.step) {
-      setStep(data.step);
-      localStorage.setItem('adventure-step', data.step.toString());
-    }
-    setIsLoading(false);
-  };
-
-  const fetchImage = async (narrativeText: string) => {
-    try {
-      const response = await fetch('/api/generateImage', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ narrative: narrativeText }),
-      });
-      const data = await response.json();
-      if (data.imageUrl) {
-        setImageUrl(data.imageUrl);
-        localStorage.setItem('adventure-image-url', data.imageUrl);
-      }
-    } catch (error) {
-      console.error('Error fetching image:', error);
-    }
-  };
+  }, [fetchStory]); 
 
   const handleChoiceClick = async (choiceId: string) => {
     setIsButtonLoading(true);
+    setImageUrl(null);  
+
     const response = await fetch('/api/generateStory', {
       method: 'POST',
       headers: {
@@ -99,7 +104,7 @@ export function AdventureCarousel({ narrative, choices }: AdventureCarouselProps
     if (data.narrative) {
       setCurrentNarrative(data.narrative);
       localStorage.setItem('adventure-narrative', data.narrative);
-      await fetchImage(data.narrative); // Fetch the image for the new narrative
+      fetchImage(data.narrative);  
     }
     if (data.choices) {
       setCurrentChoices(data.choices);
@@ -125,29 +130,35 @@ export function AdventureCarousel({ narrative, choices }: AdventureCarouselProps
             </div>
           ) : (
             <>
-              {imageUrl && (
-                <div className="flex justify-center items-center w-full mb-4">  {/* Centering the image */}
-                  <div className="relative w-80 h-80">  {/* Image wrapper */}
-                    <Image
-                      src={imageUrl}
-                      alt="Generated Scene"
-                      layout="fill"  // Ensures the image fills the container
-                      objectFit="contain"  // Adjusts how the image is displayed within the container
-                    />
-                  </div>
+              {isImageLoading ? (
+                <div className="flex justify-center items-center w-full mb-4">
+                  <span className="text-lg font-semibold">Loading Image...</span>
                 </div>
+              ) : (
+                imageUrl && (
+                  <div className="flex justify-center items-center w-full mb-4">  
+                    <div className="relative w-80 h-80">  
+                      <Image
+                        src={imageUrl}
+                        alt="Generated Scene"
+                        layout="fill"  
+                        objectFit="contain"  
+                      />
+                    </div>
+                  </div>
+                )
               )}
               <div className="text-lg font-semibold text-center mb-4">{currentNarrative}</div>
-              <div className="flex flex-col md:flex-row justify-between md:space-x-4 space-y-2 md:space-y-0">
+              <div className="flex flex-wrap justify-between gap-4">
                 {currentChoices.map((choice) => {
                   const choiceText = choice.id.replace(/\{\{[0-9]+\.\}\}\s*/, '').trim();
                   const [buttonText, description] = choiceText.split(':').map(part => part.trim());
 
                   return (
-                    <Button
+                    <button
                       key={choice.id}
                       onClick={() => handleChoiceClick(choice.id)}
-                      className="flex-1 flex flex-col items-center justify-center"
+                      className="flex-1 min-w-[150px] md:min-w-[200px] bg-black text-white rounded-lg flex flex-col items-center justify-center text-center break-words overflow-hidden px-4 py-2 disabled:opacity-50 disabled:cursor-not-allowed"
                       disabled={isButtonLoading}
                     >
                       {isButtonLoading ? (
@@ -158,7 +169,7 @@ export function AdventureCarousel({ narrative, choices }: AdventureCarouselProps
                           {description && <span className="text-xs text-gray-500 mt-1">{description}</span>}
                         </>
                       )}
-                    </Button>
+                    </button>
                   );
                 })}
               </div>
