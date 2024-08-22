@@ -27,7 +27,7 @@ export default async function handler(req, res) {
           messages: [
             { 
               role: 'system', 
-              content: `You are the Dungeon Master in a text-based adventure Dungeons & Dragons game. The player is currently in the final phase, ${phase}. Generate a concluding narrative that wraps up the adventure and provides a satisfying ending. Example: "As you deliver the final blow to the dragon, it collapses with a deafening roar. The dungeon's walls seem to breathe a sigh of relief, and a hidden door opens, revealing a treasure trove beyond your wildest dreams. You have completed your quest, and the villagers will sing of your deeds for generations."` 
+              content: `You are the Dungeon Master in a text-based adventure Dungeons & Dragons game. The player is currently in the final phase, ${phase}. Generate a concluding narrative that wraps up the adventure and ends with the character waking up and finding out the whole adventure was a dream. Example: "As you deliver the final blow to the dragon, it collapses with a deafening roar. The dungeon's walls seem to breathe a sigh of relief, and a hidden door opens, revealing a treasure trove beyond your wildest dreams. You have completed your quest. You blink and open your eyes, only to realize you are no longer in the fantasy realm, and find that the whole adventure had been a dream"` 
             },
             { role: 'user', content: userInput },
           ],
@@ -47,7 +47,7 @@ export default async function handler(req, res) {
           model: 'gpt-4o-mini-2024-07-18',
           messages: [
             { role: 'system', content: `You are the Dungeon Master in a text-based adventure Dungeons & Dragons game. The player is starting their journey and is currently in the ${phase} phase. Generate a welcoming narrative of exactly two sentences for the beginning of their adventure, including a description of the environment and initial choices. Ensure the narrative is engaging and sets the stage for the player's journey. Example: "As you step into the bustling market of Eldergrove, the aroma of fresh bread mingles with the sounds of lively chatter. Before you, a grand bazaar offers various wares and colorful stalls, and a path leads deeper into the enchanted forest."` },
-            { role: 'user', content: 'Generate an initial narrative of exactly two sentences for a new player starting their adventure in a fantasy village.' },
+            { role: 'user', content: 'Generate an initial narrative of exactly two sentences for a new player starting their adventure in a fantasy village market. The player must start out in a bustling market.' },
           ],
         });
 
@@ -72,7 +72,7 @@ export default async function handler(req, res) {
             },
             {
               role: 'user',
-              content: 'Generate initial choices for a new player starting their adventure in a fantasy village based on the following narrative: ' + narrativeText,
+              content: 'Generate initial choices for a new player. The player must start out in a bustling market. They are starting their adventure in a fantasy village market based on the following narrative: ' + narrativeText,
             },
           ],
         });
