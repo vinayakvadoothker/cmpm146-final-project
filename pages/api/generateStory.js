@@ -6,6 +6,7 @@ const openai = new OpenAI({
 });
 
 export default async function handler(req, res) {
+  console.log("handler",req,res) 
   if (req.method === 'POST') {
     const { userInput, isFirstVisit } = req.body;
     let step = parseInt(req.body.step) || 1;
@@ -46,20 +47,28 @@ export default async function handler(req, res) {
         const initialNarrativeCompletion = await openai.chat.completions.create({
           model: 'gpt-4o-mini-2024-07-18',
           messages: [
-            { role: 'system', content: `You are the Dungeon Master in a text-based adventure Dungeons & Dragons game. The player is starting their journey and is currently in the ${phase} phase. Generate a welcoming narrative of exactly two sentences for the beginning of their adventure, including a description of the environment and initial choices. Ensure the narrative is engaging and sets the stage for the player's journey. Example: "As you step into the bustling market of Eldergrove, the aroma of fresh bread mingles with the sounds of lively chatter. Before you, a grand bazaar offers various wares and colorful stalls, and a path leads deeper into the enchanted forest."` },
+            { role: 'system', content: `You are the dungeon master for a fantasy game like dungeons and dragons. You are in a conversation with a party of players. Each turn, briefly describe the situation, then ask the party what actions they want to do. Read their input, and then tell the what happens as a result of their actions. Keep track of their health, their inventory, and their gold. The party consists of: a human wizard named Fred. Fred has 1 apple. Fred has a magic wand. An orc fighter named Joe. Joe has no food. Joe has a wooden sword. The party has 100 pieces of gold. The party is preparing to go to a dungeon. The party is in the marketplace of the town of Figby Falls.` },
             { role: 'user', content: 'Generate an initial narrative of exactly two sentences for a new player starting their adventure in a fantasy village market. The player must start out in a bustling market.' },
           ],
         });
 
         narrativeText = initialNarrativeCompletion.choices[0].message.content;
-
         // Generate initial choices for the first-time visit
         const initialChoicesCompletion = await openai.chat.completions.create({
           model: 'gpt-4o-mini-2024-07-18',
           messages: [
             {
               role: 'system',
-              content: `You are the Dungeon Master in a text-based adventure Dungeons & Dragons game. Generate a list of initial choices that the player can choose from. Each choice should be numbered starting from {{1.}} and formatted as {{1.}}, {{2.}}, etc.
+              content: `You are the dungeon master for a fantasy game like dungeons and dragons. 
+              You are in a conversation with a party of players. 
+              Each turn, briefly describe the situation.
+              Keep track of their health, their inventory, and their gold. 
+              The party consists of: a human wizard named Frodo. 
+              Frodo has 1 apple and one golden ring. An orc fighter named Joe. Joe has no food. 
+              Joe has a wooden sword. The party has 100 pieces of gold. The party is preparing to go to a dungeon. 
+              The party is in the marketplace of the town of Figby Falls.. 
+              Generate a list of initial choices that the player can choose from. 
+              Each choice should be numbered starting from {{1.}} and formatted as {{1.}}, {{2.}}, etc.
               
               Limit to 3 choices. Each choice is a maximum of 10 words.
 
@@ -147,4 +156,6 @@ export default async function handler(req, res) {
     res.setHeader('Allow', ['POST']);
     res.status(405).end(`Method ${req.method} Not Allowed`);
   }
+
+
 }

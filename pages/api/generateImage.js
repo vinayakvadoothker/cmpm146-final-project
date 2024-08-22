@@ -16,7 +16,7 @@ export default async function handler(req, res) {
   try {
     const response = await openai.images.generate({
       model: "dall-e-3",
-      prompt: `Create an image based on this description for a Dungeon and Dragons text adventure game: ${narrative}. Do not include any text or anything other than imagery in the image. The image should always include a mysterious character with long dark hair wearing a brown robe, with his face partially obscured by shadows. This is our main character.`,
+      prompt: `Make a dungeons a dragons inspired scene with this movie script: ${narrative}. Do not include any text or anything other than imagery in the image. The image should always include a mysterious character with long dark hair wearing a brown robe, with his face partially obscured by shadows. This is our main character.`,
       size: "1024x1024",  
       quality: "standard",
       n: 1,
